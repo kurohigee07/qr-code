@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Sentinel — Cybersecurity Scanner</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Playfair Display SC (mewah) + Tenor Sans (elegan) + Fira Code (mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Tenor+Sans&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void:     '#05050d',
+            abyss:    '#08081a',
+            deep:     '#0c0c20',
+            royal:    '#1a0a3a',
+            velvet:   '#2d1060',
+            amethyst: '#6b21a8',
+            orchid:   '#9333ea',
+            lavender: '#c084fc',
+            silk:     '#e9d5ff',
+            pearl:    '#f0edf8',
+            silver:   '#94a3b8',
+            mist:     '#64748b',
+            gold:     '#d4a017',
+            champagne:'#f5e6c8',
+            crimson:  '#be123c',
+            scarlet:  '#f43f5e',
+            danger:   '#ff1744',
+            jade:     '#059669',
+            emerald:  '#10b981',
+          },
+          fontFamily: {
+            display: ['"Playfair Display SC"', 'serif'],
+            serif:   ['"Playfair Display"', 'serif'],
+            body:    ['"Tenor Sans"', 'sans-serif'],
+            mono:    ['"Fira Code"', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-void text-pearl min-h-screen font-body overflow-x-hidden">
+
+  <!-- Ambient Background -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="relative z-10 border-b border-orchid/15 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="logo-mark">
+          <svg viewBox="0 0 44 44" width="40" height="40" fill="none">
+            <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" stroke="url(#goldGrad)" stroke-width="1.5" fill="url(#bgGrad)"/>
+            <path d="M15 15h5v5h-5zM24 15h5v5h-5zM15 24h5v5h-5zM24 24h5v5h-5z" fill="url(#goldGrad)" opacity="0.85"/>
+            <defs>
+              <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d4a017"/>
+                <stop offset="100%" stop-color="#f5e6c8"/>
+              </linearGradient>
+              <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1a0a3a"/>
+                <stop offset="100%" stop-color="#2d1060"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-display text-base tracking-[0.25em] text-gold leading-none">QR SENTINEL</h1>
+          <p class="font-mono text-[10px] text-silver/50 tracking-wider mt-1">CYBERSECURITY SCANNER v2.4.1</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="font-mono text-xs text-silver/60 tracking-wider" id="statusText">SYSTEM IDLE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="relative z-10 max-w-6xl mx-auto px-6 py-12">
+
+    <!-- Hero -->
+    <section class="text-center mb-14">
+      <p class="font-mono text-[10px] tracking-[0.5em] text-gold/60 uppercase mb-4">— Threat Intelligence Module —</p>
+      <h2 class="font-display text-4xl md:text-5xl text-pearl leading-tight mb-5">
+        Scan. Analyze. <em class="text-gradient-gold not-italic">Protect.</em>
+      </h2>
+      <p class="font-serif text-silver/60 text-xl italic max-w-lg mx-auto leading-relaxed">
+        Deteksi ancaman tersembunyi di balik setiap QR Code — sebelum mereka menyerangmu.
+      </p>
+      <div class="divider-ornament">✦</div>
+    </section>
+
+    <!-- Two Column -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <!-- LEFT: Scanner -->
+      <div class="luxury-card">
+        <div class="card-header">
+          <div class="flex items-center gap-2">
+            <span class="module-tag">I</span>
+            <h3 class="font-display text-xs tracking-[0.2em] text-gold">LIVE SCANNER</h3>
+          </div>
+          <span class="font-mono text-[9px] text-mist/50 tracking-wider">MODULE_01</span>
+        </div>
+
+        <!-- Viewfinder -->
+        <div class="viewfinder-wrap" id="viewfinderContainer">
+          <div id="qr-reader" class="w-full"></div>
+          <div class="viewfinder-idle" id="viewfinderIdle">
+            <div class="idle-qr-icon">
+              <svg viewBox="0 0 80 80" width="56" height="56" fill="none">
+                <rect x="8"  y="8"  width="22" height="22" rx="3" stroke="#9333ea" stroke-width="1.5"/>
+                <rect x="13" y="13" width="12" height="12" rx="1" fill="#6b21a8" opacity="0.7"/>
+                <rect x="50" y="8"  width="22" height="22" rx="3" stroke="#9333ea" stroke-width="1.5"/>
+                <rect x="55" y="13" width="12" height="12" rx="1" fill="#6b21a8" opacity="0.7"/>
+                <rect x="8"  y="50" width="22" height="22" rx="3" stroke="#9333ea" stroke-width="1.5"/>
+                <rect x="13" y="55" width="12" height="12" rx="1" fill="#6b21a8" opacity="0.7"/>
+                <path d="M50 60h8v8h-8zM60 50h10v10h-10zM50 50h8v8h-8z" fill="#9333ea" opacity="0.5"/>
+                <path d="M37 8v10M43 8v10M37 62v10M43 62v10M8 37h10M8 43h10M62 37h10M62 43h10" stroke="#6b21a8" stroke-width="1" opacity="0.4"/>
+              </svg>
+            </div>
+            <p class="font-mono text-[10px] text-silver/40 tracking-widest mt-3">KAMERA TIDAK AKTIF</p>
+            <p class="font-serif text-silver/25 text-sm italic mt-1">Aktifkan kamera atau upload gambar</p>
+          </div>
+          <div class="scan-line" id="scanLine" style="display:none;"></div>
+          <div class="corner-bracket tl" id="cb1" style="display:none;"></div>
+          <div class="corner-bracket tr" id="cb2" style="display:none;"></div>
+          <div class="corner-bracket bl" id="cb3" style="display:none;"></div>
+          <div class="corner-bracket br" id="cb4" style="display:none;"></div>
+        </div>
+
+        <!-- Camera Buttons -->
+        <div class="flex gap-3 mt-5">
+          <button id="startScanBtn" class="luxury-btn-primary flex-1">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,1 11,6 2,11"/></svg>
+            <span>AKTIFKAN KAMERA</span>
+          </button>
+          <button id="stopScanBtn" class="luxury-btn-secondary flex-1" disabled>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect width="10" height="10"/></svg>
+            <span>HENTIKAN</span>
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 my-5">
+          <div class="flex-1 h-px bg-gradient-to-r from-transparent to-orchid/20"></div>
+          <span class="font-display text-[10px] tracking-widest text-mist/40">ATAU</span>
+          <div class="flex-1 h-px bg-gradient-to-l from-transparent to-orchid/20"></div>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*" class="hidden" />
+          <div id="uploadContent">
+            <div class="upload-arrow">↑</div>
+            <p class="font-body text-xs text-silver/50 tracking-wider mt-2">UPLOAD GAMBAR QR CODE</p>
+            <p class="font-serif text-silver/25 text-sm italic mt-1">Klik atau seret file ke sini</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Analysis + URL Dissector -->
+      <div class="flex flex-col gap-6">
+
+        <!-- Threat Analysis -->
+        <div class="luxury-card flex-1">
+          <div class="card-header">
+            <div class="flex items-center gap-2">
+              <span class="module-tag">II</span>
+              <h3 class="font-display text-xs tracking-[0.2em] text-gold">THREAT ANALYSIS</h3>
+            </div>
+            <span class="font-mono text-[9px] text-mist/50 tracking-wider">MODULE_02</span>
+          </div>
+
+          <div id="resultArea">
+            <div class="text-center py-10">
+              <div class="radar-ring">
+                <div class="radar-sweep"></div>
+                <div class="radar-center"></div>
+              </div>
+              <p class="font-mono text-[10px] text-silver/30 tracking-widest mt-5">MENUNGGU DATA INPUT...</p>
+            </div>
+          </div>
+
+          <div id="rawUrlContainer" style="display:none;" class="mt-4">
+            <p class="font-mono text-[9px] text-mist/40 tracking-widest mb-2">RAW PAYLOAD</p>
+            <div class="payload-box">
+              <code id="rawUrlText" class="font-mono text-xs text-lavender/90 break-all"></code>
+              <button id="copyUrlBtn" class="copy-btn" title="Salin URL">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="threatDetails" class="mt-4" style="display:none;"></div>
+
+          <div id="actionButtons" class="mt-5 flex gap-3" style="display:none;">
+            <button id="analyzeUrlBtn" class="luxury-btn-primary flex-1 text-xs">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>BUKA PREVIEW</span>
+            </button>
+            <button id="clearResultBtn" class="luxury-btn-ghost text-xs">RESET</button>
+          </div>
+        </div>
+
+        <!-- URL Dissector -->
+        <div class="luxury-card">
+          <div class="card-header">
+            <div class="flex items-center gap-2">
+              <span class="module-tag">III</span>
+              <h3 class="font-display text-xs tracking-[0.2em] text-gold">URL DISSECTOR</h3>
+            </div>
+            <span class="font-mono text-[9px] text-mist/50 tracking-wider">MODULE_03</span>
+          </div>
+          <p class="font-serif text-silver/40 text-sm italic mb-3">Tempel URL secara manual untuk dianalisis</p>
+          <div class="flex gap-2">
+            <input type="text" id="manualUrlInput" placeholder="https://example.com/path..." class="luxury-input flex-1" />
+            <button id="manualAnalyzeBtn" class="luxury-btn-primary px-5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Live Preview -->
+    <section class="mt-8" id="previewSection" style="display:none;">
+      <div class="luxury-card">
+        <div class="card-header">
+          <div class="flex items-center gap-3">
+            <span class="module-tag" style="background: rgba(16,185,129,0.15); color:#10b981; border-color:rgba(16,185,129,0.3);">IV</span>
+            <h3 class="font-display text-xs tracking-[0.2em] text-emerald">LIVE PREVIEW</h3>
+            <span class="safe-badge">AMAN</span>
+          </div>
+          <button id="closePreviewBtn" class="font-mono text-[10px] text-mist/40 hover:text-silver/70 tracking-wider transition-colors">[ TUTUP ]</button>
+        </div>
+        <div class="iframe-wrap mt-4">
+          <div class="iframe-toolbar">
+            <div class="iframe-dots"><span></span><span></span><span></span></div>
+            <div class="iframe-url-bar" id="iframeUrlBar">—</div>
+            <div class="sandbox-tag">SANDBOX</div>
+          </div>
+          <iframe id="previewFrame"
+            sandbox="allow-scripts allow-same-origin"
+            style="width:100%; height:440px; border:none; background:#fff; display:block;"
+            title="Live Preview">
+          </iframe>
+        </div>
+        <p class="font-mono text-[9px] text-mist/30 tracking-wider mt-3 text-center">
+          ⚠ Preview berjalan dalam iframe sandbox terisolasi — akses filesystem & kamera diblokir
+        </p>
+      </div>
+    </section>
+
+    <!-- Scan History -->
+    <section class="mt-8">
+      <div class="luxury-card">
+        <div class="card-header">
+          <div class="flex items-center gap-2">
+            <span class="module-tag">V</span>
+            <h3 class="font-display text-xs tracking-[0.2em] text-gold">SCAN HISTORY LOG</h3>
+          </div>
+          <button id="clearHistoryBtn" class="font-mono text-[9px] text-mist/30 hover:text-silver/60 tracking-wider transition-colors">[ HAPUS LOG ]</button>
+        </div>
+        <div id="historyLog" class="history-log mt-4">
+          <div class="text-center py-8" id="historyEmpty">
+            <p class="font-mono text-[10px] text-silver/20 tracking-widest">BELUM ADA RIWAYAT SCAN</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- DANGER MODAL -->
+  <div id="dangerModal" class="modal-backdrop" style="display:none;" role="alertdialog" aria-modal="true" aria-labelledby="dangerTitle">
+    <div class="danger-modal" id="dangerModalBox">
+      <div class="danger-blink-border" aria-hidden="true"></div>
+
+      <div class="danger-top-bar">
+        <div class="danger-scanner-line"></div>
+        <span class="font-mono text-[9px] tracking-[0.4em] text-danger/70">⬡ PERINGATAN KRITIS TERDETEKSI</span>
+      </div>
+
+      <div class="danger-header">
+        <div class="danger-icon-wrap">
+          <svg viewBox="0 0 60 60" width="52" height="52" fill="none">
+            <polygon points="30,4 56,50 4,50" stroke="#f43f5e" stroke-width="2" fill="rgba(244,63,94,0.08)"/>
+            <line x1="30" y1="20" x2="30" y2="36" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="30" cy="43" r="2.5" fill="#f43f5e"/>
+          </svg>
+        </div>
+        <div>
+          <h2 id="dangerTitle" class="font-display text-2xl tracking-wider" style="color:#f43f5e;">ANCAMAN TERDETEKSI</h2>
+          <p class="font-body text-silver/50 text-sm mt-1">File berbahaya ditemukan dalam QR Code ini</p>
+        </div>
+      </div>
+
+      <div class="danger-body">
+        <div class="danger-ext-box">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-mono text-[9px] tracking-widest text-danger/60">EKSTENSI BERBAHAYA</span>
+            <span class="crit-badge">CRITICAL</span>
+          </div>
+          <code id="dangerExtension" class="font-mono text-danger text-lg block"></code>
+        </div>
+
+        <div class="danger-url-box mt-3">
+          <span class="font-mono text-[9px] text-mist/40 tracking-widest block mb-1">PAYLOAD URL</span>
+          <code id="dangerUrl" class="font-mono text-xs text-silver/50 break-all block"></code>
+        </div>
+
+        <div class="danger-rules mt-4">
+          <div class="danger-rule-item">
+            <span class="danger-x">✕</span>
+            <span>Jangan unduh atau buka file ini dalam kondisi apapun</span>
+          </div>
+          <div class="danger-rule-item">
+            <span class="danger-x">✕</span>
+            <span>Laporkan QR Code ini kepada tim keamanan siber</span>
+          </div>
+          <div class="danger-rule-item">
+            <span class="danger-x">✕</span>
+            <span>File mungkin mengandung malware, ransomware, atau spyware</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="danger-footer">
+        <button id="closeDangerBtn" class="danger-dismiss-btn">
+          SAYA MENGERTI — ABAIKAN ANCAMAN INI
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast-notif" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
