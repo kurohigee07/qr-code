@@ -29,16 +29,64 @@
     <!-- Html5-QRCode Library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-    <!-- Custom CSS (file terpisah) -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ========== CUSTOM STYLES – INLINE ========== */
+        body {
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, #1a1030 0%, #05050c 70%);
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-feature-settings: "ss02";
+        }
+        @media (min-width: 640px) {
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+                background-size: 32px 32px;
+                pointer-events: none;
+                z-index: 0;
+            }
+        }
+        #reader {
+            border-radius: 1.25rem;
+            overflow: hidden;
+            background: #111122;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 20px 40px -12px rgba(0,0,0,0.6);
+        }
+        .preview-iframe {
+            width: 100%;
+            height: 320px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0.75rem;
+            background: #0a0a14;
+            transition: opacity 0.3s ease;
+        }
+        @keyframes pulse-warning {
+            0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
+            50% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.6); }
+        }
+        .blink-warning {
+            animation: pulse-warning 1.2s infinite;
+            border-color: rgba(239, 68, 68, 0.8);
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #2d2d4a; border-radius: 2px; }
+    </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex items-center justify-center p-4 relative z-10">
 
     <main class="w-full max-w-md mx-auto relative">
-        <!-- Card Container -->
         <div class="bg-dark-800/70 backdrop-blur-sm rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border border-white/5 p-6 md:p-8 transition-all">
-
-            <!-- Header -->
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 mb-5 shadow-lg shadow-indigo-500/10">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#iconGradient)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -58,30 +106,21 @@
                 <p class="text-gray-400 text-sm mt-1">Pindai & Analisis Aman</p>
             </div>
 
-            <!-- Kamera -->
             <div id="reader" class="mx-auto mb-6"></div>
 
-            <!-- Tombol Kontrol -->
             <div class="flex gap-3 justify-center mb-6">
                 <button id="startBtn" class="group flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 active:scale-95 text-white font-medium py-3.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/20">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
                     <span>Pindai</span>
                 </button>
                 <button id="stopBtn" class="flex-1 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-200 font-medium py-3.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2.5 border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed" disabled>
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     <span>Stop</span>
                 </button>
             </div>
 
-            <!-- Status -->
             <div id="statusMessage" class="text-sm text-center text-gray-400 mb-5 min-h-[24px] flex items-center justify-center gap-2"></div>
 
-            <!-- Hasil Scan -->
             <div id="resultContainer" class="hidden bg-dark-900/60 border border-white/5 rounded-2xl p-4 mt-2 backdrop-blur-sm">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
@@ -97,7 +136,6 @@
                 </div>
             </div>
 
-            <!-- Peringatan File Berbahaya -->
             <div id="dangerFileAlert" class="hidden mt-4 bg-red-950/70 border border-red-800 rounded-2xl p-4 text-center blink-warning backdrop-blur-sm">
                 <div class="flex items-center justify-center gap-2 text-red-300 font-semibold text-sm md:text-base">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
@@ -105,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- Detail Analisis URL -->
             <div id="urlDetailContainer" class="hidden mt-4 bg-dark-900/60 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -123,7 +160,6 @@
                 <div id="securityNote" class="mt-3 text-xs text-yellow-300 hidden"></div>
             </div>
 
-            <!-- Preview Iframe + Fallback -->
             <div id="previewContainer" class="hidden mt-4 bg-dark-900/60 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -185,16 +221,13 @@
             let isScanning = false;
             let currentUrl = '';
 
-            // === Fungsi Fade In Elegan ===
             function applyFadeIn(el) {
                 el.classList.remove('fade-in-up');
-                void el.offsetWidth; // reflow
+                void el.offsetWidth;
                 el.classList.add('fade-in-up');
             }
 
-            // === Parse & Cek URL (DENGAN SEMUA FITUR DETEKSI) ===
             function parseAndCheckURL(urlString) {
-                // Reset semua
                 urlDetailContainer.classList.add('hidden');
                 securityNote.classList.add('hidden');
                 previewContainer.classList.add('hidden');
@@ -203,13 +236,10 @@
                 dangerFileAlert.classList.add('hidden');
                 currentUrl = urlString;
 
-                if (!urlString || !urlString.trim()) return;
+                if (!urlString?.trim()) return;
 
                 let url;
-                try {
-                    url = new URL(urlString);
-                } catch (e) {
-                    // Bukan URL valid
+                try { url = new URL(urlString); } catch {
                     urlDetailContainer.classList.remove('hidden');
                     applyFadeIn(urlDetailContainer);
                     detailProtocol.textContent = '❌ Tidak valid';
@@ -221,7 +251,6 @@
                     return;
                 }
 
-                // Isi detail URL
                 urlDetailContainer.classList.remove('hidden');
                 applyFadeIn(urlDetailContainer);
                 detailProtocol.textContent = url.protocol.replace(':', '');
@@ -232,65 +261,38 @@
                 detailHash.textContent = url.hash || '-';
 
                 const protocol = url.protocol.replace(':', '').toLowerCase();
-
-                // === DETEKSI FILE BERBAHAYA (REGEX) ===
-                const dangerousFileRegex = /\.(exe|apk|bat|scr|msi|vbs)([?#].*)?$/i;
-                const isDangerousFile = dangerousFileRegex.test(url.pathname);
-
-                let level = 'AMAN';
-                let badgeClass = 'bg-green-900/60 text-green-300 border-green-800';
-                let note = '';
+                const isDangerousFile = /\.(exe|apk|bat|scr|msi|vbs)([?#].*)?$/i.test(url.pathname);
+                let level = 'AMAN', badgeClass = 'bg-green-900/60 text-green-300 border-green-800', note = '';
 
                 if (isDangerousFile) {
-                    level = 'BERBAHAYA';
-                    badgeClass = 'bg-red-900/60 text-red-300 border-red-800';
+                    level = 'BERBAHAYA'; badgeClass = 'bg-red-900/60 text-red-300 border-red-800';
                     note = '🚫 File mencurigakan terdeteksi! Jangan diunduh.';
                     dangerFileAlert.classList.remove('hidden');
                     applyFadeIn(dangerFileAlert);
                 } else {
-                    if (protocol === 'https') {
-                        level = 'AMAN (HTTPS)';
-                    } else if (protocol === 'http') {
-                        level = 'PERINGATAN';
-                        badgeClass = 'bg-yellow-900/60 text-yellow-300 border-yellow-800';
-                        note = '⚠️ HTTP tidak terenkripsi.';
-                    } else if (['javascript', 'data', 'vbscript'].includes(protocol)) {
-                        level = 'BERBAHAYA';
-                        badgeClass = 'bg-red-900/60 text-red-300 border-red-800';
-                        note = '🚫 Protokol berbahaya!';
-                    } else if (['ftp', 'file'].includes(protocol)) {
-                        level = 'HATI-HATI';
-                        badgeClass = 'bg-orange-900/60 text-orange-300 border-orange-800';
-                    } else {
-                        level = 'TIDAK DIKENAL';
-                        badgeClass = 'bg-gray-800 text-gray-300 border-gray-700';
-                    }
+                    if (protocol === 'https') { level = 'AMAN (HTTPS)'; }
+                    else if (protocol === 'http') { level = 'PERINGATAN'; badgeClass = 'bg-yellow-900/60 text-yellow-300 border-yellow-800'; note = '⚠️ HTTP tidak terenkripsi.'; }
+                    else if (['javascript','data','vbscript'].includes(protocol)) { level = 'BERBAHAYA'; badgeClass = 'bg-red-900/60 text-red-300 border-red-800'; note = '🚫 Protokol berbahaya!'; }
+                    else if (['ftp','file'].includes(protocol)) { level = 'HATI-HATI'; badgeClass = 'bg-orange-900/60 text-orange-300 border-orange-800'; }
+                    else { level = 'TIDAK DIKENAL'; badgeClass = 'bg-gray-800 text-gray-300 border-gray-700'; }
                 }
 
-                // Update badge & note
                 securityBadge.textContent = level;
                 securityBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-bold border ${badgeClass}`;
-                if (note) {
-                    securityNote.textContent = note;
-                    securityNote.classList.remove('hidden');
-                }
-
-                // Deteksi domain non-ASCII (spoofing)
+                if (note) { securityNote.textContent = note; securityNote.classList.remove('hidden'); }
                 if (url.hostname && /[^\x00-\x7F]/.test(url.hostname)) {
-                    securityNote.textContent += ' 🌐 Domain mengandung karakter non-ASCII.';
+                    securityNote.textContent += ' 🌐 Domain non-ASCII.';
                     securityNote.classList.remove('hidden');
                     securityBadge.textContent = 'WASPADA';
                     securityBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-900/60 text-red-300 border-red-800';
                 }
 
-                // Preview hanya jika http/https dan bukan file berbahaya
                 if (!isDangerousFile && (protocol === 'http' || protocol === 'https')) {
                     previewContainer.classList.remove('hidden');
                     applyFadeIn(previewContainer);
                     previewFrame.src = urlString;
                     previewFrame.classList.remove('hidden');
                     previewError.classList.add('hidden');
-                    // Fallback kalau iframe gagal
                     setTimeout(() => {
                         if (!previewFrame.contentDocument?.body?.innerHTML) {
                             previewFrame.classList.add('hidden');
@@ -300,13 +302,9 @@
                 }
             }
 
-            // === Callback Sukses Scan ===
             function onScanSuccess(decodedText) {
                 if (html5QrCode && isScanning) {
-                    html5QrCode.stop().then(() => {
-                        isScanning = false;
-                        updateUI(false);
-                    }).catch(() => {});
+                    html5QrCode.stop().then(() => { isScanning = false; updateUI(false); }).catch(() => {});
                 }
                 resultText.textContent = decodedText || '(kosong)';
                 resultContainer.classList.remove('hidden');
@@ -317,15 +315,8 @@
 
             function onScanFailure() {}
 
-            // === Mulai Scanner ===
             async function startScanner() {
                 try {
                     if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-                    const config = {
-                        fps: 10,
-                        qrbox: { width: 250, height: 250 },
-                        aspectRatio: 1.0,
-                        facingMode: "environment"
-                    };
-                    statusMsg.textContent = '⏳ Meminta izin kamera...';
-              
+                    await html5QrCode.start(
+                        { facingMode: "environmen
