@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>QR Code Scanner • Dark Mode</title>
-
-    <!-- Tailwind CSS CDN (dark mode class-based) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -19,148 +17,77 @@
                             700: '#242836',
                             600: '#2f3542',
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
+                    }
                 }
             }
         }
     </script>
-
-    <!-- Html5-QRCode Library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
     <style>
-        body {
-            background-color: #0f1117;
-            margin: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-        #reader {
-            border-radius: 1rem;
-            overflow: hidden;
-            background: #1a1d27;
-        }
-        #reader video {
-            border-radius: 1rem;
-        }
-        #reader__scan_region {
-            border-radius: 1rem;
-        }
-        #reader__dashboard_section {
-            background: #1a1d27 !important;
-            border-radius: 1rem;
-        }
-        .result-url {
-            word-break: break-all;
-            transition: all 0.2s ease;
-        }
-        /* Animasi halus untuk detail URL */
-        .url-detail-row {
-            transition: background 0.15s;
-        }
+        body { background-color: #0f1117; margin: 0; -webkit-tap-highlight-color: transparent; }
+        #reader { border-radius: 1rem; overflow: hidden; background: #1a1d27; width: 100%; aspect-ratio: 1/1; }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex items-center justify-center p-4">
-
     <main class="w-full max-w-lg mx-auto">
-        <!-- Card Container -->
-        <div class="bg-dark-800 rounded-2xl shadow-2xl shadow-black/40 border border-dark-600 p-6 md:p-8 transition-all">
-            
-            <!-- Header -->
+        <div class="bg-dark-800 rounded-2xl shadow-2xl shadow-black/40 border border-dark-600 p-6 md:p-8">
             <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo-600/20 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75Z" />
-                    </svg>
-                </div>
-                <h1 class="text-2xl font-bold text-white tracking-tight">QR Code Scanner</h1>
-                <p class="text-dark-600 text-sm mt-1">Arahkan kamera ke kode QR</p>
+                <h1 class="text-2xl font-bold text-white">QR Code Scanner</h1>
+                <p class="text-gray-400 text-sm mt-1">Arahkan kamera ke kode QR</p>
             </div>
-
-            <!-- Area Kamera -->
-            <div id="reader" class="w-full aspect-square mx-auto mb-5 border border-dark-600 bg-dark-900"></div>
-
-            <!-- Tombol Kontrol -->
-            <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-                <button id="startBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-medium py-3 px-5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                    </svg>
+            <div id="reader" class="mx-auto mb-5 border border-dark-600 bg-dark-900"></div>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                <button id="startBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-medium py-3 px-5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg">
                     Aktifkan Kamera
                 </button>
                 <button id="stopBtn" class="flex-1 bg-dark-600 hover:bg-dark-500 active:scale-95 text-gray-200 font-medium py-3 px-5 rounded-xl transition-all flex items-center justify-center gap-2 border border-dark-500 disabled:opacity-40 disabled:cursor-not-allowed" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
                     Stop
                 </button>
             </div>
-
-            <!-- Status / Error -->
             <div id="statusMessage" class="text-sm text-center text-gray-400 mb-4 min-h-[20px]"></div>
-
-            <!-- Hasil Scan (URL mentah + tombol salin) -->
-            <div id="resultContainer" class="hidden bg-dark-900 border border-dark-600 rounded-xl p-4 mt-2 transition-all">
-                <p class="text-xs uppercase tracking-wider text-gray-500 mb-2 font-semibold">🔗 URL Terdeteksi</p>
+            <div id="resultContainer" class="hidden bg-dark-900 border border-dark-600 rounded-xl p-4 mt-2">
+                <p class="text-xs uppercase text-gray-500 mb-2">🔗 URL Terdeteksi</p>
                 <div class="flex items-start gap-3">
                     <div class="flex-1 bg-dark-800 rounded-lg p-3 border border-dark-700">
-                        <p id="resultText" class="result-url text-indigo-300 font-mono text-sm break-all select-all"></p>
+                        <p id="resultText" class="text-indigo-300 font-mono text-sm break-all select-all"></p>
                     </div>
-                    <button id="copyBtn" class="shrink-0 bg-dark-700 hover:bg-dark-600 p-2.5 rounded-lg transition-colors border border-dark-500" title="Salin URL">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
-                        </svg>
-                    </button>
+                    <button id="copyBtn" class="shrink-0 bg-dark-700 hover:bg-dark-600 p-2.5 rounded-lg border border-dark-500">📋</button>
                 </div>
             </div>
-
-            <!-- Detail Pemecahan URL (hasil parse & cek) -->
-            <div id="urlDetailContainer" class="hidden mt-4 bg-dark-900 border border-dark-600 rounded-xl p-4 transition-all">
-                <h3 class="text-xs uppercase tracking-wider text-gray-500 mb-3 font-semibold flex items-center gap-2">
-                    <span>🔍 Analisis URL</span>
+            <div id="urlDetailContainer" class="hidden mt-4 bg-dark-900 border border-dark-600 rounded-xl p-4">
+                <h3 class="text-xs uppercase text-gray-500 mb-3 font-semibold flex items-center gap-2">
+                    🔍 Analisis URL
                     <span id="securityBadge" class="ml-auto px-2 py-0.5 rounded text-xs font-bold"></span>
                 </h3>
                 <div class="space-y-2 text-sm">
-                    <div class="flex justify-between items-center url-detail-row py-1 px-2 rounded bg-dark-800/50">
-                        <span class="text-gray-400">Protokol</span>
-                        <span id="detailProtocol" class="text-white font-mono">-</span>
-                    </div>
-                    <div class="flex justify-between items-center url-detail-row py-1 px-2 rounded bg-dark-800/50">
-                        <span class="text-gray-400">Host / Domain</span>
-                        <span id="detailHost" class="text-white font-mono">-</span>
-                    </div>
-                    <div class="flex justify-between items-center url-detail-row py-1 px-2 rounded bg-dark-800/50">
-                        <span class="text-gray-400">Port</span>
-                        <span id="detailPort" class="text-white font-mono">-</span>
-                    </div>
-                    <div class="flex justify-between items-center url-detail-row py-1 px-2 rounded bg-dark-800/50">
-                        <span class="text-gray-400">Path</span>
-                        <span id="detailPath" class="text-white font-mono text-right max-w-[200px] truncate">-</span>
-                    </div>
-                    <div class="flex justify-between items-center url-detail-row py-1 px-2 rounded bg-dark-800/50">
-                        <span class="text-gray-400">Query String</span>
-                        <span id="detailQuery" class="text-white font-mono text-right max-w-[200px] truncate">-</span>
-                    </div>
-                    <div class="flex justify-between items-center url-detail-row py-1 px-2 rounded bg-dark-800/50">
-                        <span class="text-gray-400">Hash / Fragment</span>
-                        <span id="detailHash" class="text-white font-mono">-</span>
-                    </div>
+                    <div class="flex justify-between py-1 px-2 rounded bg-dark-800/50"><span class="text-gray-400">Protokol</span><span id="detailProtocol" class="text-white font-mono">-</span></div>
+                    <div class="flex justify-between py-1 px-2 rounded bg-dark-800/50"><span class="text-gray-400">Host / Domain</span><span id="detailHost" class="text-white font-mono">-</span></div>
+                    <div class="flex justify-between py-1 px-2 rounded bg-dark-800/50"><span class="text-gray-400">Port</span><span id="detailPort" class="text-white font-mono">-</span></div>
+                    <div class="flex justify-between py-1 px-2 rounded bg-dark-800/50"><span class="text-gray-400">Path</span><span id="detailPath" class="text-white font-mono text-right max-w-[200px] truncate">-</span></div>
+                    <div class="flex justify-between py-1 px-2 rounded bg-dark-800/50"><span class="text-gray-400">Query</span><span id="detailQuery" class="text-white font-mono text-right max-w-[200px] truncate">-</span></div>
+                    <div class="flex justify-between py-1 px-2 rounded bg-dark-800/50"><span class="text-gray-400">Hash</span><span id="detailHash" class="text-white font-mono">-</span></div>
                 </div>
-                <!-- Peringatan keamanan tambahan -->
                 <div id="securityNote" class="mt-3 text-xs text-yellow-400 hidden"></div>
             </div>
         </div>
-        <p class="text-center text-dark-600 text-xs mt-5">Pastikan memberikan izin akses kamera</p>
     </main>
 
     <script>
         (function() {
-            // Elemen DOM
-            const readerDiv = document.getElementById('reader');
+            // Cek konteks aman (kamera hanya bisa diakses di HTTPS atau localhost)
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                document.getElementById('statusMessage').innerHTML = '❌ Kamera hanya bisa diakses melalui <b>HTTPS</b> atau <b>localhost</b>. Silakan buka halaman ini di server lokal atau https.';
+                document.getElementById('startBtn').disabled = true;
+                return;
+            }
+
+            // Cek library tersedia
+            if (typeof Html5Qrcode === 'undefined') {
+                document.getElementById('statusMessage').textContent = '❌ Library QR Code gagal dimuat. Periksa koneksi internet.';
+                document.getElementById('startBtn').disabled = true;
+                return;
+            }
+
             const startBtn = document.getElementById('startBtn');
             const stopBtn = document.getElementById('stopBtn');
             const statusMsg = document.getElementById('statusMessage');
@@ -180,23 +107,15 @@
             let html5QrCode = null;
             let isScanning = false;
 
-            // ========= FUNGSI PEMBEDAH URL + PENGECEKAN =========
             function parseAndCheckURL(urlString) {
-                // Reset dulu
                 urlDetailContainer.classList.add('hidden');
                 securityNote.classList.add('hidden');
-                
-                if (!urlString || urlString.trim() === '') {
-                    return; // tidak ada yang diparse
-                }
+                if (!urlString || urlString.trim() === '') return;
 
                 let url;
                 try {
-                    // Gunakan URL constructor untuk parsing
                     url = new URL(urlString);
                 } catch (e) {
-                    // Jika bukan URL valid (contoh: teks biasa, atau format tidak dikenal)
-                    // Tetap tampilkan info bahwa parsing gagal
                     urlDetailContainer.classList.remove('hidden');
                     detailProtocol.textContent = '❌ Tidak valid';
                     detailHost.textContent = '-';
@@ -211,103 +130,65 @@
                     return;
                 }
 
-                // Tampilkan container detail
                 urlDetailContainer.classList.remove('hidden');
-
-                // Isi detail
-                detailProtocol.textContent = url.protocol.replace(/:$/, ''); // https: -> https
+                detailProtocol.textContent = url.protocol.replace(/:$/, '');
                 detailHost.textContent = url.hostname || '(kosong)';
                 detailPort.textContent = url.port || (url.protocol === 'https:' ? '443 (default)' : url.protocol === 'http:' ? '80 (default)' : '-');
                 detailPath.textContent = url.pathname || '/';
                 detailQuery.textContent = url.search || '(tidak ada)';
                 detailHash.textContent = url.hash || '(tidak ada)';
 
-                // Cek keamanan berdasarkan protokol
                 const protocol = url.protocol.replace(/:$/, '').toLowerCase();
                 let securityLevel = 'AMAN';
                 let badgeClass = 'bg-green-900 text-green-300';
                 let noteText = '';
 
-                if (protocol === 'https') {
-                    securityLevel = 'AMAN (HTTPS)';
-                    badgeClass = 'bg-green-900 text-green-300';
-                } else if (protocol === 'http') {
-                    securityLevel = 'PERINGATAN';
-                    badgeClass = 'bg-yellow-900 text-yellow-300';
-                    noteText = '⚠️ Koneksi tidak terenkripsi (HTTP). Hindari memasukkan data sensitif.';
-                } else if (protocol === 'javascript' || protocol === 'data' || protocol === 'vbscript') {
-                    securityLevel = 'BERBAHAYA';
-                    badgeClass = 'bg-red-900 text-red-300';
-                    noteText = '🚫 Protokol berbahaya! Jangan dijalankan.';
-                } else if (protocol === 'ftp' || protocol === 'file') {
-                    securityLevel = 'HATI-HATI';
-                    badgeClass = 'bg-orange-900 text-orange-300';
-                    noteText = 'Protokol non-web, mungkin mengandung risiko.';
-                } else {
-                    securityLevel = 'TIDAK DIKENAL';
-                    badgeClass = 'bg-gray-700 text-gray-300';
-                    noteText = 'Protokol tidak umum, berhati-hatilah.';
-                }
+                if (protocol === 'https') { securityLevel = 'AMAN (HTTPS)'; badgeClass = 'bg-green-900 text-green-300'; }
+                else if (protocol === 'http') { securityLevel = 'PERINGATAN'; badgeClass = 'bg-yellow-900 text-yellow-300'; noteText = '⚠️ HTTP tidak terenkripsi.'; }
+                else if (protocol === 'javascript' || protocol === 'data' || protocol === 'vbscript') { securityLevel = 'BERBAHAYA'; badgeClass = 'bg-red-900 text-red-300'; noteText = '🚫 Protokol berbahaya!'; }
+                else if (protocol === 'ftp' || protocol === 'file') { securityLevel = 'HATI-HATI'; badgeClass = 'bg-orange-900 text-orange-300'; }
+                else { securityLevel = 'TIDAK DIKENAL'; badgeClass = 'bg-gray-700 text-gray-300'; }
 
                 securityBadge.textContent = securityLevel;
                 securityBadge.className = `px-2 py-0.5 rounded text-xs font-bold ${badgeClass}`;
-
-                if (noteText) {
-                    securityNote.textContent = noteText;
-                    securityNote.classList.remove('hidden');
-                } else {
-                    securityNote.classList.add('hidden');
-                }
-
-                // Pengecekan tambahan: jika domain mengandung karakter mencurigakan (contoh IDN homograph)
+                if (noteText) { securityNote.textContent = noteText; securityNote.classList.remove('hidden'); }
                 if (url.hostname && /[^\x00-\x7F]/.test(url.hostname)) {
-                    securityNote.textContent += ' 🌐 Domain mengandung karakter non-ASCII (mungkin spoofing).';
+                    securityNote.textContent += ' 🌐 Domain mengandung karakter non-ASCII.';
                     securityNote.classList.remove('hidden');
                     securityBadge.textContent = 'WASPADA';
                     securityBadge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-red-900 text-red-300';
                 }
             }
-            // ========= AKHIR FUNGSI PEMBEDAH =========
 
-            function onScanSuccess(decodedText, decodedResult) {
-                // Hentikan scanning
+            function onScanSuccess(decodedText) {
                 if (html5QrCode && isScanning) {
                     html5QrCode.stop().then(() => {
                         isScanning = false;
                         updateUIState(false);
-                    }).catch(err => console.warn('Gagal stop:', err));
+                    }).catch(e => console.warn(e));
                 }
-
-                // Tampilkan URL mentah
                 resultText.textContent = decodedText || '(URL kosong)';
                 resultContainer.classList.remove('hidden');
                 statusMsg.textContent = '✅ QR Code berhasil dipindai.';
-                statusMsg.className = 'text-sm text-center text-green-400 mb-4 min-h-[20px]';
-
-                // Lakukan parsing & pengecekan URL
+                statusMsg.className = 'text-sm text-center text-green-400 mb-4';
                 parseAndCheckURL(decodedText);
             }
 
-            function onScanFailure(error) {
-                // Tidak menampilkan error frame demi frame
-            }
+            function onScanFailure() {}
 
             async function startScanner() {
-                if (html5QrCode === null) {
-                    html5QrCode = new Html5Qrcode("reader");
-                }
-
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    aspectRatio: 1.0,
-                    facingMode: "environment"
-                };
-
-                statusMsg.textContent = '⏳ Meminta izin kamera...';
-                statusMsg.className = 'text-sm text-center text-yellow-400 mb-4 min-h-[20px]';
-
                 try {
+                    if (!html5QrCode) {
+                        html5QrCode = new Html5Qrcode("reader");
+                    }
+                    const config = {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0,
+                        facingMode: "environment"
+                    };
+                    statusMsg.textContent = '⏳ Meminta izin kamera...';
+                    statusMsg.className = 'text-sm text-center text-yellow-400 mb-4';
                     await html5QrCode.start(
                         { facingMode: "environment" },
                         config,
@@ -317,13 +198,18 @@
                     isScanning = true;
                     updateUIState(true);
                     statusMsg.textContent = '📷 Kamera aktif – arahkan ke QR Code.';
-                    statusMsg.className = 'text-sm text-center text-indigo-300 mb-4 min-h-[20px]';
+                    statusMsg.className = 'text-sm text-center text-indigo-300 mb-4';
                     resultContainer.classList.add('hidden');
                     urlDetailContainer.classList.add('hidden');
                 } catch (err) {
                     console.error(err);
-                    statusMsg.textContent = '❌ Gagal mengakses kamera.';
-                    statusMsg.className = 'text-sm text-center text-red-400 mb-4 min-h-[20px]';
+                    let msg = '❌ Gagal mengakses kamera. ';
+                    if (err.name === 'NotAllowedError') msg += 'Izin kamera ditolak. Buka pengaturan browser.';
+                    else if (err.name === 'NotFoundError') msg += 'Kamera tidak ditemukan.';
+                    else if (err.name === 'NotReadableError') msg += 'Kamera sedang digunakan aplikasi lain.';
+                    else msg += 'Coba lagi.';
+                    statusMsg.textContent = msg;
+                    statusMsg.className = 'text-sm text-center text-red-400 mb-4';
                     isScanning = false;
                     updateUIState(false);
                 }
@@ -336,7 +222,7 @@
                         isScanning = false;
                         updateUIState(false);
                         statusMsg.textContent = '⏹️ Scanner dihentikan.';
-                        statusMsg.className = 'text-sm text-center text-gray-400 mb-4 min-h-[20px]';
+                        statusMsg.className = 'text-sm text-center text-gray-400 mb-4';
                     } catch (err) {
                         console.error(err);
                     }
@@ -344,32 +230,41 @@
             }
 
             function updateUIState(scanning) {
-                if (scanning) {
-                    startBtn.disabled = true;
-                    stopBtn.disabled = false;
-                    startBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    stopBtn.classList.remove('opacity-40', 'cursor-not-allowed');
-                } else {
-                    startBtn.disabled = false;
-                    stopBtn.disabled = true;
-                    startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    stopBtn.classList.add('opacity-40', 'cursor-not-allowed');
-                }
+                startBtn.disabled = scanning;
+                stopBtn.disabled = !scanning;
+                startBtn.classList.toggle('opacity-50', scanning);
+                startBtn.classList.toggle('cursor-not-allowed', scanning);
+                stopBtn.classList.toggle('opacity-40', !scanning);
+                stopBtn.classList.toggle('cursor-not-allowed', !scanning);
             }
 
-            async function copyToClipboard() {
+            copyBtn.addEventListener('click', async () => {
                 const text = resultText.textContent;
                 if (!text || text === '(URL kosong)') {
                     statusMsg.textContent = '⚠️ Tidak ada URL untuk disalin.';
-                    statusMsg.className = 'text-sm text-center text-yellow-400 mb-4 min-h-[20px]';
+                    statusMsg.className = 'text-sm text-center text-yellow-400 mb-4';
                     return;
                 }
                 try {
                     await navigator.clipboard.writeText(text);
                     statusMsg.textContent = '📋 URL berhasil disalin!';
-                    statusMsg.className = 'text-sm text-center text-green-400 mb-4 min-h-[20px]';
-                    copyBtn.classList.add('bg-green-700');
-                    setTimeout(() => copyBtn.classList.remove('bg-green-700'), 800);
+                    statusMsg.className = 'text-sm text-center text-green-400 mb-4';
                 } catch (err) {
-                    statusMsg.textContent = '❌ Gagal menyalin URL.';
-  
+                    statusMsg.textContent = '❌ Gagal menyalin.';
+                    statusMsg.className = 'text-sm text-center text-red-400 mb-4';
+                }
+            });
+
+            startBtn.addEventListener('click', startScanner);
+            stopBtn.addEventListener('click', stopScanner);
+
+            window.addEventListener('beforeunload', () => {
+                if (html5QrCode && isScanning) html5QrCode.stop().catch(() => {});
+            });
+
+            updateUIState(false);
+            statusMsg.textContent = '🔘 Tekan "Aktifkan Kamera" untuk memulai.';
+        })();
+    </script>
+</body>
+</html>
