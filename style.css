@@ -1,4 +1,4 @@
-/* ===== QR Vision – Custom Styles ===== */
+/* ========== CUSTOM STYLES – QR Vision ========== */
 
 /* Background mewah bergradasi + subtle pattern */
 body {
@@ -8,7 +8,7 @@ body {
     font-feature-settings: "ss02";
 }
 
-/* Pattern dots subtle hanya untuk desktop, tidak membebani mobile */
+/* Pattern dots subtle hanya untuk desktop */
 @media (min-width: 640px) {
     body::before {
         content: '';
@@ -37,7 +37,7 @@ body {
     transition: opacity 0.3s ease;
 }
 
-/* Animasi pulse elegan (bukan opacity 0) */
+/* Animasi pulse untuk peringatan berbahaya */
 @keyframes pulse-warning {
     0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
     50% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.6); }
@@ -56,22 +56,10 @@ body {
 }
 
 @keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Scroll custom */
-::-webkit-scrollbar {
-    width: 4px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #2d2d4a;
-    border-radius: 2px;
-}
+/* Scrollbar custom */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2d2d4a; border-radius: 2px; }
