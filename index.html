@@ -13,7 +13,7 @@
             theme: {
                 extend: {
                     colors: {
-                        luxury: {
+                        dark: {
                             950: '#05050c',
                             900: '#0a0a14',
                             800: '#111122',
@@ -29,15 +29,16 @@
     <!-- Html5-QRCode Library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-    <!-- Custom CSS -->
+    <!-- Custom CSS (file terpisah) -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="font-sans antialiased min-h-screen flex items-center justify-center p-4 relative z-10">
-    <main class="w-full max-w-md mx-auto relative">
-        <!-- Glass card -->
-        <div class="bg-luxury-800/70 backdrop-blur-sm rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border border-white/5 p-6 md:p-8 transition-all">
 
-            <!-- Header dengan ikon premium -->
+    <main class="w-full max-w-md mx-auto relative">
+        <!-- Card Container -->
+        <div class="bg-dark-800/70 backdrop-blur-sm rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border border-white/5 p-6 md:p-8 transition-all">
+
+            <!-- Header -->
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 mb-5 shadow-lg shadow-indigo-500/10">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#iconGradient)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -60,7 +61,7 @@
             <!-- Kamera -->
             <div id="reader" class="mx-auto mb-6"></div>
 
-            <!-- Kontrol -->
+            <!-- Tombol Kontrol -->
             <div class="flex gap-3 justify-center mb-6">
                 <button id="startBtn" class="group flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 active:scale-95 text-white font-medium py-3.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/20">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -81,13 +82,13 @@
             <div id="statusMessage" class="text-sm text-center text-gray-400 mb-5 min-h-[24px] flex items-center justify-center gap-2"></div>
 
             <!-- Hasil Scan -->
-            <div id="resultContainer" class="hidden bg-luxury-900/60 border border-white/5 rounded-2xl p-4 mt-2 backdrop-blur-sm">
+            <div id="resultContainer" class="hidden bg-dark-900/60 border border-white/5 rounded-2xl p-4 mt-2 backdrop-blur-sm">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
                     <span>Link Terdeteksi</span>
                 </div>
                 <div class="flex items-start gap-3">
-                    <div class="flex-1 bg-luxury-800 rounded-xl p-3 border border-white/5">
+                    <div class="flex-1 bg-dark-800 rounded-xl p-3 border border-white/5">
                         <p id="resultText" class="text-indigo-200 font-mono text-sm break-all select-all"></p>
                     </div>
                     <button id="copyBtn" class="shrink-0 bg-white/5 hover:bg-white/10 p-2.5 rounded-xl border border-white/5 transition-colors" title="Salin URL">
@@ -104,8 +105,8 @@
                 </div>
             </div>
 
-            <!-- Detail Analisis -->
-            <div id="urlDetailContainer" class="hidden mt-4 bg-luxury-900/60 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
+            <!-- Detail Analisis URL -->
+            <div id="urlDetailContainer" class="hidden mt-4 bg-dark-900/60 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     <span>Analisis URL</span>
@@ -122,8 +123,8 @@
                 <div id="securityNote" class="mt-3 text-xs text-yellow-300 hidden"></div>
             </div>
 
-            <!-- Preview -->
-            <div id="previewContainer" class="hidden mt-4 bg-luxury-900/60 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
+            <!-- Preview Iframe + Fallback -->
+            <div id="previewContainer" class="hidden mt-4 bg-dark-900/60 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span>Live Preview</span>
@@ -145,17 +146,19 @@
 
     <script>
         (function() {
+            // === Cek keamanan konteks & library ===
             if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
                 document.getElementById('statusMessage').innerHTML = '❌ Kamera perlu <b>HTTPS</b> atau localhost.';
                 document.getElementById('startBtn').disabled = true;
                 return;
             }
             if (typeof Html5Qrcode === 'undefined') {
-                document.getElementById('statusMessage').textContent = '❌ Gagal memuat library.';
+                document.getElementById('statusMessage').textContent = '❌ Gagal memuat library QR Code.';
                 document.getElementById('startBtn').disabled = true;
                 return;
             }
 
+            // === DOM Elements ===
             const $ = (id) => document.getElementById(id);
             const startBtn = $('startBtn');
             const stopBtn = $('stopBtn');
@@ -182,13 +185,16 @@
             let isScanning = false;
             let currentUrl = '';
 
+            // === Fungsi Fade In Elegan ===
             function applyFadeIn(el) {
                 el.classList.remove('fade-in-up');
                 void el.offsetWidth; // reflow
                 el.classList.add('fade-in-up');
             }
 
+            // === Parse & Cek URL (DENGAN SEMUA FITUR DETEKSI) ===
             function parseAndCheckURL(urlString) {
+                // Reset semua
                 urlDetailContainer.classList.add('hidden');
                 securityNote.classList.add('hidden');
                 previewContainer.classList.add('hidden');
@@ -197,10 +203,13 @@
                 dangerFileAlert.classList.add('hidden');
                 currentUrl = urlString;
 
-                if (!urlString?.trim()) return;
+                if (!urlString || !urlString.trim()) return;
 
                 let url;
-                try { url = new URL(urlString); } catch {
+                try {
+                    url = new URL(urlString);
+                } catch (e) {
+                    // Bukan URL valid
                     urlDetailContainer.classList.remove('hidden');
                     applyFadeIn(urlDetailContainer);
                     detailProtocol.textContent = '❌ Tidak valid';
@@ -212,6 +221,7 @@
                     return;
                 }
 
+                // Isi detail URL
                 urlDetailContainer.classList.remove('hidden');
                 applyFadeIn(urlDetailContainer);
                 detailProtocol.textContent = url.protocol.replace(':', '');
@@ -222,39 +232,65 @@
                 detailHash.textContent = url.hash || '-';
 
                 const protocol = url.protocol.replace(':', '').toLowerCase();
-                const isDangerousFile = /\.(exe|apk|bat|scr|msi|vbs)([?#].*)?$/i.test(url.pathname);
-                let level = 'AMAN', badgeClass = 'bg-green-900/60 text-green-300 border-green-800', note = '';
+
+                // === DETEKSI FILE BERBAHAYA (REGEX) ===
+                const dangerousFileRegex = /\.(exe|apk|bat|scr|msi|vbs)([?#].*)?$/i;
+                const isDangerousFile = dangerousFileRegex.test(url.pathname);
+
+                let level = 'AMAN';
+                let badgeClass = 'bg-green-900/60 text-green-300 border-green-800';
+                let note = '';
 
                 if (isDangerousFile) {
-                    level = 'BERBAHAYA'; badgeClass = 'bg-red-900/60 text-red-300 border-red-800';
-                    note = '🚫 File mencurigakan! Jangan diunduh.';
+                    level = 'BERBAHAYA';
+                    badgeClass = 'bg-red-900/60 text-red-300 border-red-800';
+                    note = '🚫 File mencurigakan terdeteksi! Jangan diunduh.';
                     dangerFileAlert.classList.remove('hidden');
                     applyFadeIn(dangerFileAlert);
                 } else {
-                    if (protocol === 'https') { level = 'AMAN (HTTPS)'; }
-                    else if (protocol === 'http') { level = 'PERINGATAN'; badgeClass = 'bg-yellow-900/60 text-yellow-300 border-yellow-800'; note = '⚠️ HTTP tidak terenkripsi.'; }
-                    else if (['javascript','data','vbscript'].includes(protocol)) { level = 'BERBAHAYA'; badgeClass = 'bg-red-900/60 text-red-300 border-red-800'; note = '🚫 Protokol berbahaya!'; }
-                    else if (['ftp','file'].includes(protocol)) { level = 'HATI-HATI'; badgeClass = 'bg-orange-900/60 text-orange-300 border-orange-800'; }
-                    else { level = 'TIDAK DIKENAL'; badgeClass = 'bg-gray-800 text-gray-300 border-gray-700'; }
+                    if (protocol === 'https') {
+                        level = 'AMAN (HTTPS)';
+                    } else if (protocol === 'http') {
+                        level = 'PERINGATAN';
+                        badgeClass = 'bg-yellow-900/60 text-yellow-300 border-yellow-800';
+                        note = '⚠️ HTTP tidak terenkripsi.';
+                    } else if (['javascript', 'data', 'vbscript'].includes(protocol)) {
+                        level = 'BERBAHAYA';
+                        badgeClass = 'bg-red-900/60 text-red-300 border-red-800';
+                        note = '🚫 Protokol berbahaya!';
+                    } else if (['ftp', 'file'].includes(protocol)) {
+                        level = 'HATI-HATI';
+                        badgeClass = 'bg-orange-900/60 text-orange-300 border-orange-800';
+                    } else {
+                        level = 'TIDAK DIKENAL';
+                        badgeClass = 'bg-gray-800 text-gray-300 border-gray-700';
+                    }
                 }
 
+                // Update badge & note
                 securityBadge.textContent = level;
                 securityBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-bold border ${badgeClass}`;
-                if (note) { securityNote.textContent = note; securityNote.classList.remove('hidden'); }
+                if (note) {
+                    securityNote.textContent = note;
+                    securityNote.classList.remove('hidden');
+                }
+
+                // Deteksi domain non-ASCII (spoofing)
                 if (url.hostname && /[^\x00-\x7F]/.test(url.hostname)) {
-                    securityNote.textContent += ' 🌐 Domain non-ASCII.';
+                    securityNote.textContent += ' 🌐 Domain mengandung karakter non-ASCII.';
                     securityNote.classList.remove('hidden');
                     securityBadge.textContent = 'WASPADA';
                     securityBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-900/60 text-red-300 border-red-800';
                 }
 
-                // Preview hanya untuk http/https dan bukan file berbahaya
+                // Preview hanya jika http/https dan bukan file berbahaya
                 if (!isDangerousFile && (protocol === 'http' || protocol === 'https')) {
                     previewContainer.classList.remove('hidden');
                     applyFadeIn(previewContainer);
                     previewFrame.src = urlString;
                     previewFrame.classList.remove('hidden');
                     previewError.classList.add('hidden');
+                    // Fallback kalau iframe gagal
                     setTimeout(() => {
                         if (!previewFrame.contentDocument?.body?.innerHTML) {
                             previewFrame.classList.add('hidden');
@@ -264,9 +300,13 @@
                 }
             }
 
+            // === Callback Sukses Scan ===
             function onScanSuccess(decodedText) {
                 if (html5QrCode && isScanning) {
-                    html5QrCode.stop().then(() => { isScanning = false; updateUI(false); }).catch(() => {});
+                    html5QrCode.stop().then(() => {
+                        isScanning = false;
+                        updateUI(false);
+                    }).catch(() => {});
                 }
                 resultText.textContent = decodedText || '(kosong)';
                 resultContainer.classList.remove('hidden');
@@ -277,43 +317,15 @@
 
             function onScanFailure() {}
 
+            // === Mulai Scanner ===
             async function startScanner() {
                 try {
                     if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-                    await html5QrCode.start(
-                        { facingMode: "environment" },
-                        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
-                        onScanSuccess,
-                        onScanFailure
-                    );
-                    isScanning = true;
-                    updateUI(true);
-                    statusMsg.innerHTML = '📷 <span class="text-indigo-300">Kamera aktif</span>';
-                } catch (err) {
-                    let msg = '❌ Gagal akses kamera. ';
-                    if (err.name === 'NotAllowedError') msg += 'Izin ditolak.';
-                    else if (err.name === 'NotFoundError') msg += 'Kamera tidak ada.';
-                    else msg += 'Coba lagi.';
-                    statusMsg.textContent = msg;
-                    isScanning = false;
-                    updateUI(false);
-                }
-            }
-
-            async function stopScanner() {
-                if (html5QrCode && isScanning) {
-                    await html5QrCode.stop().catch(() => {});
-                    isScanning = false;
-                    updateUI(false);
-                    statusMsg.textContent = '⏹️ Scanner berhenti.';
-                }
-            }
-
-            function updateUI(scanning) {
-                startBtn.disabled = scanning;
-                stopBtn.disabled = !scanning;
-                startBtn.classList.toggle('opacity-50', scanning);
-                stopBtn.classList.toggle('opacity-30', !scanning);
-            }
-
-            copyBtn.addEventL
+                    const config = {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0,
+                        facingMode: "environment"
+                    };
+                    statusMsg.textContent = '⏳ Meminta izin kamera...';
+              
